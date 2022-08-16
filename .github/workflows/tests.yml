@@ -24,10 +24,9 @@ jobs:
         - 1433:1433
 
     steps:
-      - name: show Docker logs
+      - name: show Docker processes
         run: |
           docker ps -a
-          docker logs --timestamps --details
       - name: check sqlcmd
         run: sqlcmd -?
       - name: list sql servers
