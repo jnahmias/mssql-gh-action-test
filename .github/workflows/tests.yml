@@ -17,7 +17,7 @@ jobs:
         image: mcr.microsoft.com/mssql/server:2017-latest
         env:
           ACCEPT_EULA: Y
-          SA_PASSWORD: ${{ env.SAPWD }}
+          MSSQL_SA_PASSWORD: ${{ env.SAPWD }}
           MSSQL_PID: Developer
           MSSQL_COLLATION: SQL_Latin1_General_CP1_CI_AS
         ports:
