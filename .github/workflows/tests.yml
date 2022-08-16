@@ -4,12 +4,32 @@ on:
   push
 
 jobs:
+
+  # Generate one-time random passwords for MSSQL
+  gen-passwords:
+    runs-on: ubuntu-latest
+    outputs:
+      SAPW:  ${{ steps.genpw.outputs.sapw  }}
+      APPPW: ${{ steps.genpw.outputs.apppw }}
+    steps:
+      - name: install pre-requisites
+        run: sudo apt install --quiet --assume-yes apg
+      - name: generate database passwords
+        id: genpw
+        run: |
+          printf '::set-output name=sapwd::%s\n' \
+            $(apg -a 1 -n 1 -m 32 -M SNCL -E "@:;[]{}/()<>\\'\"")
+          printf '::set-output name=apppwd::%s\n' \
+            $(apg -a 1 -n 1 -m 32 -M SNCL -E "@:;[]{}/()<>\\'\"")
+
   ms-test:
 
     runs-on: ubuntu-latest
 
+    needs: gen-passwords
     env:
-      SAPWD: I2qi.Ya3Yw=jwVMmdPw.58rNLAO-Ys2v
+      SAPW:  ${{ needs.gen-passwords.outputs.SAPW  }}
+      APPPW: ${{ needs.gen-passwords.outputs.APPPW }}
 
     # Setup bare MSSQL database instance
     services:
@@ -17,7 +37,7 @@ jobs:
         image: mcr.microsoft.com/mssql/server:2017-latest
         env:
           ACCEPT_EULA: Y
-          MSSQL_SA_PASSWORD: ${{ env.SAPWD }}
+          MSSQL_SA_PASSWORD: ${{ env.SAPW }}
           MSSQL_PID: Developer
           MSSQL_COLLATION: SQL_Latin1_General_CP1_CI_AS
         ports:
@@ -34,7 +54,7 @@ jobs:
           SQLCMDSERVER: localhost
           SQLCMDDBNAME: master
           SQLCMDUSER: sa
-          SQLCMDPASSWORD: ${{ env.SAPWD }}
+          SQLCMDPASSWORD: ${{ env.SAPW }}
         run: sqlcmd -b -m-1 -p1 -Q "SELECT @@SERVERNAME, @@SPID, USER, SYSTEM_USER;"
 
 # vim: set ts=2 sw=2 et si:
