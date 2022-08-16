@@ -29,8 +29,6 @@ jobs:
           docker ps -a
       - name: check sqlcmd
         run: sqlcmd -?
-      - name: list sql servers
-        run: sqlcmd -L
       - name: test connect to database
         env:
           SQLCMDSERVER: localhost
