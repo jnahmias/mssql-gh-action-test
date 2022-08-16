@@ -27,7 +27,7 @@ jobs:
       - name: show Docker logs
         run: |
           docker ps -a
-          docker logs -t mssql
+          docker logs --timestamps --details
       - name: check sqlcmd
         run: sqlcmd -?
       - name: list sql servers
