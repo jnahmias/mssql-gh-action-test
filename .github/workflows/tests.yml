@@ -29,7 +29,7 @@ jobs:
           docker ps -a
       - name: check sqlcmd
         run: sqlcmd -?
-      - name: test connect to database
+      - name: test connect to database as SA
         env:
           SQLCMDSERVER: localhost
           SQLCMDDBNAME: master
