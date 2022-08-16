@@ -35,4 +35,4 @@ jobs:
           SQLCMDDBNAME: master
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPWD }}
-        run: sqlcmd -b -m-1 -p1 -Q "SELECT @@SERVERNAME, @@SPID, USER, SYSTEM_USER, CONNECTIONPROPERTY('auth_scheme');"
+        run: sqlcmd -b -m-1 -p1 -Q "SELECT @@SERVERNAME, @@SPID, USER, SYSTEM_USER;"
