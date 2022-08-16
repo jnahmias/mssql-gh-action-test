@@ -36,3 +36,5 @@ jobs:
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPWD }}
         run: sqlcmd -b -m-1 -p1 -Q "SELECT @@SERVERNAME, @@SPID, USER, SYSTEM_USER;"
+
+# vim: set ts=2 sw=2 et si:
