@@ -34,7 +34,7 @@ jobs:
         run: sqlcmd -L
       - name: test connect to database
         env:
-          SQLCMDSERVER: mssql
+          SQLCMDSERVER: localhost
           SQLCMDDBNAME: master
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPWD }}
