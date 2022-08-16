@@ -1,0 +1,41 @@
+name: Tests
+
+on:
+  push
+
+jobs:
+  ms-test:
+
+    runs-on: ubuntu-latest
+
+    env:
+      SAPWD: I2qi.Ya3Yw=jwVMmdPw.58rNLAO-Ys2v
+
+    # Setup bare MSSQL database instance
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2017-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: ${{ env.SAPWD }}
+          MSSQL_PID: Developer
+          MSSQL_COLLATION: SQL_Latin1_General_CP1_CI_AS
+        ports:
+        - 1433:1433
+
+    steps:
+      - name: show Docker logs
+        run: |
+          docker ps -a
+          docker logs -t mssql
+      - name: check sqlcmd
+        run: sqlcmd -?
+      - name: list sql servers
+        run: sqlcmd -L
+      - name: test connect to database
+        env:
+          SQLCMDSERVER: mssql
+          SQLCMDDBNAME: master
+          SQLCMDUSER: sa
+          SQLCMDPASSWORD: ${{ env.SAPWD }}
+        run: sqlcmd -b -m-1 -p1 -Q "SELECT @@SERVERNAME, @@SPID, USER, SYSTEM_USER, CONNECTIONPROPERTY('auth_scheme');"
