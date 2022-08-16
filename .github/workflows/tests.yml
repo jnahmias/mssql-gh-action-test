@@ -17,9 +17,9 @@ jobs:
       - name: generate database passwords
         id: genpw
         run: |
-          printf '::set-output name=sapwd::%s\n' \
+          printf '::set-output name=sapw::%s\n' \
             $(apg -a 1 -n 1 -m 32 -M SNCL -E "@:;[]{}/()<>\\'\"")
-          printf '::set-output name=apppwd::%s\n' \
+          printf '::set-output name=apppw::%s\n' \
             $(apg -a 1 -n 1 -m 32 -M SNCL -E "@:;[]{}/()<>\\'\"")
 
   ms-test:
