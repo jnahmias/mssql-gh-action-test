@@ -47,8 +47,6 @@ jobs:
       - name: show Docker processes
         run: |
           docker ps -a
-      - name: check sqlcmd
-        run: sqlcmd -?
       - name: test connect to database as SA
         env:
           SQLCMDSERVER: localhost
