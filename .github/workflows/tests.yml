@@ -16,12 +16,13 @@ jobs:
         run: sudo apt install --quiet --assume-yes apg
       - name: generate database passwords
         id: genpw
-        run: >
-          RAND_PW="$(apg -a 1 -n 1 -m 32 -M SNCL -E "~|@:;[]{}/()<>\\'\"")"
-            echo -e "::set-output name=sapw::${RAND_PW}\n::add-mask::${RAND_PW}"
-
-          RAND_PW="$(apg -a 1 -n 1 -m 32 -M SNCL -E "~|@:;[]{}/()<>\\'\"")"
-            echo -e "::set-output name=apppw::${RAND_PW}\n::add-mask::${RAND_PW}"
+        run: |
+          RAND_PW=$(apg -a 1 -n 1 -m 32 -M SNCL -E \''@:;[]{}()\"')
+          printf "::add-mask::%s\n" "$RAND_PW"
+          printf "::set-output name=sapw::%s\n" "$RAND_PW"
+          RAND_PW=$(apg -a 1 -n 1 -m 32 -M SNCL -E \''@:;[]{}()\"')
+          printf "::add-mask::%s\n" "$RAND_PW"
+          printf "::set-output name=apppw::%s\n" "$RAND_PW"
 
   ms-test:
 
