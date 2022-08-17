@@ -19,7 +19,6 @@ jobs:
         run: |
           export RAND_PW=$(apg -a 1 -n 1 -m 32 -M SNCL -E \''@:;[]{}()\"')
           printf "::set-output name=sapw::%s\n" "$RAND_PW"
-          printf "::add-mask::%s\n" "$RAND_PW"
           echo "Generated password has character class distribution:"
           printf '%s' "$RAND_PW" \
             | sed -e 's/[[:lower:]]/a/g' \
@@ -30,7 +29,6 @@ jobs:
             | sort | uniq -c
           export RAND_PW=$(apg -a 1 -n 1 -m 32 -M SNCL -E \''@:;[]{}()\"')
           printf "::set-output name=apppw::%s\n" "$RAND_PW"
-          printf "::add-mask::%s\n" "$RAND_PW"
           echo "Generated password has character class distribution:"
           printf '%s' "$RAND_PW" \
             | sed -e 's/[[:lower:]]/a/g' \
