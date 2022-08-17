@@ -17,7 +17,8 @@ jobs:
       - name: generate database passwords
         id: genpw
         run: |
-          export RAND_PW=$(apg -a 1 -n 1 -m 32 -M SNCL -E \''@:;[]{}()\"')
+          RAND_PW=$(apg -a 1 -n 1 -m 32 -M SNCL -E \''@:;[]{}()\"')
+#          printf "::add-mask::%s\n" "$RAND_PW"
           printf "::set-output name=sapw::%s\n" "$RAND_PW"
           echo "Generated password has character class distribution:"
           printf '%s' "$RAND_PW" \
@@ -27,7 +28,8 @@ jobs:
                   -e 's/[^Aa0]/*/g' \
                   -e 's/./&\n/g' \
             | sort | uniq -c
-          export RAND_PW=$(apg -a 1 -n 1 -m 32 -M SNCL -E \''@:;[]{}()\"')
+          RAND_PW=$(apg -a 1 -n 1 -m 32 -M SNCL -E \''@:;[]{}()\"')
+#          printf "::add-mask::%s\n" "$RAND_PW"
           printf "::set-output name=apppw::%s\n" "$RAND_PW"
           echo "Generated password has character class distribution:"
           printf '%s' "$RAND_PW" \
@@ -37,13 +39,6 @@ jobs:
                   -e 's/[^Aa0]/*/g' \
                   -e 's/./&\n/g' \
             | sort | uniq -c
-      - name: mask passwords
-        env:
-          SAPW:  ${{ steps.genpw.outputs.sapw  }}
-          APPPW: ${{ steps.genpw.outputs.apppw }}
-        run: |
-          printf "::add-mask::%s\n" "$SAPW"
-          printf "::add-mask::%s\n" "$APPPW"
 
   pw-test:
     runs-on: ubuntu-latest
