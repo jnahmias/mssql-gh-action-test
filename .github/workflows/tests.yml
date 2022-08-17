@@ -53,7 +53,7 @@ jobs:
           SQLCMDDBNAME: master
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPW }}
-        run: sqlcmd -b -m-1 -p1 -Q "SELECT
+        run: sqlcmd -b -m-1 -p1 -W -Q "SELECT
               ServerName = @@SERVERNAME
             , spid = @@SPID
             , login = SUSER_NAME()
@@ -66,7 +66,7 @@ jobs:
           SQLCMDDBNAME: master
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPW }}
-        run: sqlcmd -b -m-1 -p1 -Q "SELECT N'$(APPPW)' AS app_password;"
+        run: sqlcmd -b -m-1 -p1 -W -Q "SELECT N'\$(APPPW)' AS app_password;"
 
 
 # vim: set ts=2 sw=2 et si:
