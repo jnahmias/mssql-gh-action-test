@@ -41,28 +41,19 @@ jobs:
           MSSQL_SA_PASSWORD: ${{ env.SAPW }}
           MSSQL_PID: Developer
           MSSQL_COLLATION: SQL_Latin1_General_CP1_CI_AS
-        options:
-          name: mssql
+        options: >-
+          --name mssql
+          --health-cmd "/opt/mssql-tools/bin/sqlcmd -b -o /dev/null -U sa -P ${MSSQL_SA_PASSWORD} -Q 'SELECT 1;'"
+          --health-interval 60s
+          --health-timeout 30s
+          --health-start-period 20s
+          --health-retries 11
         ports:
         - 1433:1433
 
     steps:
       - name: show Docker processes
         run: docker ps --all
-      - name: check that database instance is ready
-        env:
-          TMOUT: 60
-        run: |
-          for i in `seq ${TMOUT}`; do
-            sleep 1
-            docker logs mssql \
-              | fgrep -n 'SQL Server is now ready for client connections.'
-            if [ 0 -eq $? ]; then
-              echo "$(date -u '+%F %T.%N %Z')  Info: Successfully detected SQL Server readiness after ${i} seconds"
-              exit 0
-            fi
-          done
-          echo "$(date -u '+%F %T.%N %Z')  Warning: Could not detect SQL Server ready status after ${TMOUT} seconds."
       - name: test connect to database as SA
         env:
           SQLCMDDBNAME: master
