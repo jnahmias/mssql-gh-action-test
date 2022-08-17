@@ -28,8 +28,10 @@ jobs:
 
     needs: gen-passwords
     env:
-      SAPW:  ${{ needs.gen-passwords.outputs.SAPW  }}
-      APPPW: ${{ needs.gen-passwords.outputs.APPPW }}
+      APP_DB: myTestDB
+      APP_PW: ${{ needs.gen-passwords.outputs.APPPW }}
+      APP_USER: test_app_user
+      SA_PW:  ${{ needs.gen-passwords.outputs.SAPW  }}
       SQLCMDSERVER: 127.0.0.1
 
     # Setup bare MSSQL database instance
@@ -38,7 +40,7 @@ jobs:
         image: mcr.microsoft.com/mssql/server:2017-latest
         env:
           ACCEPT_EULA: Y
-          MSSQL_SA_PASSWORD: ${{ env.SAPW }}
+          MSSQL_SA_PASSWORD: ${{ env.SA_PW }}
           MSSQL_PID: Developer
           MSSQL_COLLATION: SQL_Latin1_General_CP1_CI_AS
         options: >-
@@ -52,35 +54,24 @@ jobs:
         - 1433:1433
 
     steps:
-      - name: show Docker processes
-        run: docker ps --all
-      - name: test connect to database as SA
+      - uses: actions/checkout@v2
+      - name: create database and login/user for app access
         env:
           SQLCMDDBNAME: master
           SQLCMDUSER: sa
-          SQLCMDPASSWORD: ${{ env.SAPW }}
-        run: sqlcmd -b -m-1 -p1 -W -Q "SELECT
+          SQLCMDPASSWORD: ${{ env.SA_PW }}
+        run: sqlcmd -b -m-1 -p -W -i create_db.sql
+      - name: test connect to app database using app login/user
+        env:
+          SQLCMDDBNAME: ${{ env.APP_DB }}
+          SQLCMDUSER: ${{ env.APP_USER }}
+          SQLCMDPASSWORD: ${{ env.APP_PW }}
+        run: sqlcmd -b -m-1 -p -W -Q "SELECT
               ServerName = @@SERVERNAME
             , spid = @@SPID
             , login = SUSER_NAME()
             , DatabaseName = DB_NAME()
             , DBUser = USER_NAME()
           ;"
-      - name: test reading env vars in sqlcmd
-        env:
-          SQLCMDDBNAME: master
-          SQLCMDUSER: sa
-          SQLCMDPASSWORD: ${{ env.SAPW }}
-        run: sqlcmd -b -m-1 -p1 -W -Q "SELECT N'\$(APPPW)' AS app_password;"
-      - uses: actions/checkout@v2
-      - name: create database and login/user for app access
-        env:
-          APP_DB: myTestDB
-          APP_PW: ${{ env.APPPW }}
-          APP_USER: test_app_user
-          SQLCMDDBNAME: master
-          SQLCMDUSER: sa
-          SQLCMDPASSWORD: ${{ env.SAPW }}
-        run: sqlcmd -b -m-1 -p1 -W -i create_db.sql
 
 # vim: set ts=2 sw=2 et si:
