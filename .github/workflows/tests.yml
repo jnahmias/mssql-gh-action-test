@@ -53,6 +53,13 @@ jobs:
           SQLCMDDBNAME: master
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPW }}
-        run: sqlcmd -b -m-1 -p1 -Q "SELECT @@SERVERNAME, @@SPID, USER, SYSTEM_USER;"
+        run: sqlcmd -b -m-1 -p1 -Q "SELECT
+              ServerName = @@SERVERNAME
+            , spid = @@SPID
+            , login = SUSER_NAME()
+            , DatabaseName = DB_NAME()
+            , DBUser = USER_NAME()
+          ;"
+
 
 # vim: set ts=2 sw=2 et si:
