@@ -31,9 +31,9 @@ jobs:
     needs: gen-passwords
     env:
       APP_DB: myTestDB
-      APP_PW: ${{ secrets.APPPW }}
+      APP_PW: ${{ needs.gen-passwords.outputs.APPPW }}
       APP_USER: test_app_user
-      SA_PW:  ${{ secrets.SAPW  }}
+      SA_PW:  ${{ needs.gen-passwords.outputs.SAPW  }}
       SQLCMDSERVER: 127.0.0.1
 
     # Setup bare MSSQL database instance
