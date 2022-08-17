@@ -17,10 +17,10 @@ jobs:
       - name: generate database passwords
         id: genpw
         run: |
-          printf '::set-output name=sapw::%s\n' \
-            $(apg -a 1 -n 1 -m 32 -M SNCL -E "~|@:;[]{}/()<>\\'\"")
-          printf '::set-output name=apppw::%s\n' \
-            $(apg -a 1 -n 1 -m 32 -M SNCL -E "~|@:;[]{}/()<>\\'\"")
+          RAND_PW="$(apg -a 1 -n 1 -m 32 -M SNCL -E "~|@:;[]{}/()<>\\'\"")" \
+            echo "::set-output name=sapw::${RAND_PW}\n::add-mask::${RAND_PW}"
+          RAND_PW="$(apg -a 1 -n 1 -m 32 -M SNCL -E "~|@:;[]{}/()<>\\'\"")" \
+            echo "::set-output name=apppw::${RAND_PW}\n::add-mask::${RAND_PW}"
 
   ms-test:
 
