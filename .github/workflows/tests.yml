@@ -30,6 +30,7 @@ jobs:
     env:
       SAPW:  ${{ needs.gen-passwords.outputs.SAPW  }}
       APPPW: ${{ needs.gen-passwords.outputs.APPPW }}
+      SQLCMDSERVER: 127.0.0.1
 
     # Setup bare MSSQL database instance
     services:
@@ -49,7 +50,6 @@ jobs:
           docker ps -a
       - name: test connect to database as SA
         env:
-          SQLCMDSERVER: localhost
           SQLCMDDBNAME: master
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPW }}
@@ -62,7 +62,6 @@ jobs:
           ;"
       - name: test reading env vars in sqlcmd
         env:
-          SQLCMDSERVER: localhost
           SQLCMDDBNAME: master
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPW }}
@@ -72,7 +71,6 @@ jobs:
           APP_DB: myTestDB
           APP_PW: ${{ env.APPPW }}
           APP_USER: test_app_user
-          SQLCMDSERVER: localhost
           SQLCMDDBNAME: master
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPW }}
