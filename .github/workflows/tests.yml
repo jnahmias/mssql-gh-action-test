@@ -72,6 +72,7 @@ jobs:
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPW }}
         run: sqlcmd -b -m-1 -p1 -W -Q "SELECT N'\$(APPPW)' AS app_password;"
+      - uses: actions/checkout@v2
       - name: create database and login/user for app access
         env:
           APP_DB: myTestDB
