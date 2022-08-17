@@ -18,9 +18,9 @@ jobs:
         id: genpw
         run: |
           RAND_PW="$(apg -a 1 -n 1 -m 32 -M SNCL -E "~|@:;[]{}/()<>\\'\"")" \
-            echo "::set-output name=sapw::${RAND_PW}\n::add-mask::${RAND_PW}"
+            echo -e "::set-output name=sapw::${RAND_PW}\n::add-mask::${RAND_PW}"
           RAND_PW="$(apg -a 1 -n 1 -m 32 -M SNCL -E "~|@:;[]{}/()<>\\'\"")" \
-            echo "::set-output name=apppw::${RAND_PW}\n::add-mask::${RAND_PW}"
+            echo -e "::set-output name=apppw::${RAND_PW}\n::add-mask::${RAND_PW}"
 
   ms-test:
 
