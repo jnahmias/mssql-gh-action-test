@@ -37,6 +37,13 @@ jobs:
                   -e 's/[^Aa0]/*/g' \
                   -e 's/./&\n/g' \
             | sort | uniq -c
+      - name: mask passwords
+        env:
+          SAPW:  ${{ steps.genpw.outputs.sapw  }}
+          APPPW: ${{ steps.genpw.outputs.apppw }}
+        run: |
+          printf "::add-mask::%s\n" "$SAPW"
+          printf "::add-mask::%s\n" "$APPPW"
 
   pw-test:
     runs-on: ubuntu-latest
