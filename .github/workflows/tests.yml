@@ -67,6 +67,15 @@ jobs:
           SQLCMDUSER: sa
           SQLCMDPASSWORD: ${{ env.SAPW }}
         run: sqlcmd -b -m-1 -p1 -W -Q "SELECT N'\$(APPPW)' AS app_password;"
-
+      - name: create database and login/user for app access
+        env:
+          APP_DB: myTestDB
+          APP_PW: ${{ env.APPPW }}
+          APP_USER: test_app_user
+          SQLCMDSERVER: localhost
+          SQLCMDDBNAME: master
+          SQLCMDUSER: sa
+          SQLCMDPASSWORD: ${{ env.SAPW }}
+        run: sqlcmd -b -m-1 -p1 -W -i create_db.sql
 
 # vim: set ts=2 sw=2 et si:
